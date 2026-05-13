@@ -32,13 +32,44 @@ public class Plugin : BasePlugin
 
     public class VeinMiningToggle : MonoBehaviour
     {
+        private string _hudText = "";
+        private float _hudTimer = 0f;
+        private GUIStyle? _style;
+
         private void Update()
         {
             if (_toggleKey != null && Input.GetKeyDown(_toggleKey.Value))
             {
                 IsEnabled = !IsEnabled;
+                _hudText = $"Vein Mining: {(IsEnabled ? "ON" : "OFF")}";
+                _hudTimer = 2.5f;
                 Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Vein mining {(IsEnabled ? "ON" : "OFF")}");
             }
+
+            if (_hudTimer > 0f)
+                _hudTimer -= Time.deltaTime;
+        }
+
+        private void OnGUI()
+        {
+            if (_hudTimer <= 0f) return;
+
+            if (_style == null)
+            {
+                _style = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 22,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.UpperCenter,
+                };
+                _style.normal.textColor = Color.white;
+            }
+
+            float alpha = Mathf.Clamp01(_hudTimer);
+            var prev = GUI.color;
+            GUI.color = new Color(1f, 1f, 1f, alpha);
+            GUI.Label(new Rect(0, Screen.height * 0.08f, Screen.width, 40), _hudText, _style);
+            GUI.color = prev;
         }
     }
 }
