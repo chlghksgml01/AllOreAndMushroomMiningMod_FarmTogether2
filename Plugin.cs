@@ -87,7 +87,10 @@ public static class MineData_Work_Patch
                 var other = slots[i];
 
                 // 같은 슬롯이거나 비어있으면 건너뜀
-                if (other == null || other.Pointer == slot.Pointer || other.IsEmpty) continue;
+                if (other == null || other.IsEmpty) continue;
+                IntPtr otherPtr;
+                try { otherPtr = other.Pointer; } catch { continue; }
+                if (otherPtr == slot.Pointer) continue;
 
                 var otherContents = other.Contents;
                 if (otherContents == null) continue;
