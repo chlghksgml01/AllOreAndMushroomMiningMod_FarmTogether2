@@ -1,27 +1,42 @@
-using System;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Logic;
 using Logic.Farm.Mine;
 using Logic.Farm.Mine.Items;
+using UnityEngine;
 
 namespace VeinMiningMod;
 
-/// <summary>
-/// Farm Together 2 - Vein Mining Mod
-/// 한 광맥(MineSpotInstance)을 캐면 같은 광산 내 캘 수 있는 모든 광맥을 자동으로 캡니다.
-/// 한 버섯(MineShroomInstance)을 캐면 같은 광산 내 캘 수 있는 모든 버섯을 자동으로 캡니다.
-/// </summary>
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BasePlugin
 {
+    public static bool IsEnabled { get; private set; } = true;
+    private static ConfigEntry<KeyCode> _toggleKey;
+
     public override void Load()
     {
-        Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 로드 중...");
+        _toggleKey = Config.Bind("General", "ToggleKey", KeyCode.F8, "베인 마이닝 ON/OFF 토글 키");
+
+        Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 로드 중... (토글 키: {_toggleKey.Value})");
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         harmony.PatchAll(typeof(Plugin).Assembly);
+
+        AddComponent<VeinMiningToggle>();
         Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Harmony 패치 적용 완료.");
+    }
+
+    public class VeinMiningToggle : MonoBehaviour
+    {
+        private void Update()
+        {
+            if (Input.GetKeyDown(_toggleKey.Value))
+            {
+                IsEnabled = !IsEnabled;
+                Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 베인 마이닝 {(IsEnabled ? "ON" : "OFF")}");
+            }
+        }
     }
 }
 
@@ -47,7 +62,7 @@ public static class MineData_Work_Patch
         WorkType workType)
     {
         // 실제 채굴 성공 + 전파 중이 아닐 때만 처리
-        if (!__result || !performWork || _isPropagating) return;
+        if (!Plugin.IsEnabled || !__result || !performWork || _isPropagating) return;
         if (slot == null || slot.Contents == null) return;
 
         var contents = slot.Contents;
