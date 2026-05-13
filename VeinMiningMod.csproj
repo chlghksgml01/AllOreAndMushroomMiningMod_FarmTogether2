@@ -60,6 +60,10 @@
       <HintPath>$(FT2BepInExPath)\interop\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(FT2BepInExPath)\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <!-- 빌드 후 BepInEx plugins 폴더로 자동 복사 -->

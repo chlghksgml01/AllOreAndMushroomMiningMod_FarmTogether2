@@ -1,3 +1,4 @@
+using System;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
@@ -13,28 +14,30 @@ namespace VeinMiningMod;
 public class Plugin : BasePlugin
 {
     public static bool IsEnabled { get; private set; } = true;
-    private static ConfigEntry<KeyCode> _toggleKey;
+    private static ConfigEntry<KeyCode>? _toggleKey;
+    internal static BepInEx.Logging.ManualLogSource Logger = null!;
 
     public override void Load()
     {
+        Logger = Log;
         _toggleKey = Config.Bind("General", "ToggleKey", KeyCode.F8, "베인 마이닝 ON/OFF 토글 키");
 
-        Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 로드 중... (토글 키: {_toggleKey.Value})");
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 로드 중... (토글 키: {_toggleKey.Value})");
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         harmony.PatchAll(typeof(Plugin).Assembly);
 
         AddComponent<VeinMiningToggle>();
-        Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Harmony 패치 적용 완료.");
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Harmony 패치 적용 완료.");
     }
 
     public class VeinMiningToggle : MonoBehaviour
     {
         private void Update()
         {
-            if (Input.GetKeyDown(_toggleKey.Value))
+            if (_toggleKey != null && Input.GetKeyDown(_toggleKey.Value))
             {
                 IsEnabled = !IsEnabled;
-                Log.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 베인 마이닝 {(IsEnabled ? "ON" : "OFF")}");
+                Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 베인 마이닝 {(IsEnabled ? "ON" : "OFF")}");
             }
         }
     }
