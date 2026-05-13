@@ -22,12 +22,12 @@ public class Plugin : BasePlugin
         Logger = Log;
         _toggleKey = Config.Bind("General", "ToggleKey", KeyCode.F8, "베인 마이닝 ON/OFF 토글 키");
 
-        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 로드 중... (토글 키: {_toggleKey.Value})");
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Loading... (toggle key: {_toggleKey.Value})");
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         harmony.PatchAll(typeof(Plugin).Assembly);
 
         AddComponent<VeinMiningToggle>();
-        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Harmony 패치 적용 완료.");
+        Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Harmony patches applied.");
     }
 
     public class VeinMiningToggle : MonoBehaviour
@@ -37,7 +37,7 @@ public class Plugin : BasePlugin
             if (_toggleKey != null && Input.GetKeyDown(_toggleKey.Value))
             {
                 IsEnabled = !IsEnabled;
-                Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] 베인 마이닝 {(IsEnabled ? "ON" : "OFF")}");
+                Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Vein mining {(IsEnabled ? "ON" : "OFF")}");
             }
         }
     }
