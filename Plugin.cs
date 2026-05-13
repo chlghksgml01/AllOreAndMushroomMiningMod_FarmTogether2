@@ -8,7 +8,7 @@ using Logic.Farm.Mine;
 using Logic.Farm.Mine.Items;
 using UnityEngine;
 
-namespace VeinMiningMod;
+namespace AllOreAndMushroomMiningMod;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BasePlugin
