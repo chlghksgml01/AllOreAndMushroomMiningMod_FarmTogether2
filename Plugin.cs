@@ -20,7 +20,7 @@ public class Plugin : BasePlugin
     public override void Load()
     {
         Logger = Log;
-        _toggleKey = Config.Bind("General", "ToggleKey", KeyCode.F8, "베인 마이닝 ON/OFF 토글 키");
+        _toggleKey = Config.Bind("General", "ToggleKey", KeyCode.F8, "Toggle key to enable/disable ore and mushroom mining");
 
         Logger.LogInfo($"[{MyPluginInfo.PLUGIN_NAME}] Loading... (toggle key: {_toggleKey.Value})");
         var harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
